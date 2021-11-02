@@ -48,7 +48,7 @@ class JwtAuth{
             if(!is_null($getToken)){
                 $data['token'] =  $jwt;
             }else{
-                $data['identity'] =  $decoded;
+                $data['identify'] =  $decoded;
                 $data['token'] =  $jwt;
             }
         }else{  
