@@ -20,11 +20,12 @@ class UserController extends Controller
         $name = (!is_null($json) && isset($params->name)?$params->name:null);
         $surname = (!is_null($json) && isset($params->surname)?$params->surname:null);
         $nit = (!is_null($json) && isset($params->nit)?$params->nit:null);
+        $imageUrl = (!is_null($json) && isset($params->imageUrl)?$params->imageUrl:null);
         $idProgram = (!is_null($json) && isset($params->idProgram)?$params->idProgram:null);
         $idRol = (!is_null($json) && isset($params->idRol)?$params->idRol:null);
         $password = (!is_null($json) && isset($params->password)?$params->password:null);
     
-        if(!is_null($json) && !is_null($email) && !is_null($name)  && !is_null($surname)  && !is_null($idProgram)  && !is_null($idRol)  && !is_null($password) ){
+        if(!is_null($json) && !is_null($email) && !is_null($name)  && !is_null($surname)  && !is_null($idProgram)  && !is_null($idRol) && !is_null($nit) && !is_null($imageUrl)   && !is_null($password) ){
             //Create User 
             try{
                 $user = new User();
@@ -33,6 +34,8 @@ class UserController extends Controller
                 $user->surname = $surname;
                 $user->id_program = $idProgram;
                 $user->id_rol = $idRol;
+                $user->nit = $nit;
+                $user->image_url = $imageUrl;
                 $password = hash('sha256',$password);
                 $user->password = $password;
                 $isset_user = User::where('email','=',$email)->first();
