@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DiagnosticoController;
 use Illuminate\Support\Facades\DB;
 use App\User;
 /*
@@ -20,3 +21,4 @@ Route::get('/', function () {
 });
 Route::post('api/registerUser',[UserController::class, 'register']);
 Route::post('api/loginUser',[UserController::class, 'login']);
+Route::resource('api/autodiagnostico', DiagnosticoController::class);
