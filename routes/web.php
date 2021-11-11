@@ -19,6 +19,6 @@ use App\User;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::post('api/registerUser',[UserController::class, 'register']);
-Route::post('api/loginUser',[UserController::class, 'login']);
-Route::resource('api/autodiagnostico', DiagnosticoController::class);
+Route::post('/api/registerUser',[UserController::class, 'register']);
+Route::post('/api/loginUser',[UserController::class, 'login']);
+Route::resource('/api/autodiagnostico', DiagnosticoController::class);
