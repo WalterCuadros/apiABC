@@ -108,7 +108,7 @@ class DiagnosticoController extends Controller
      */
     public function show($id)
     {
-        $user =  DB::table('users')->select('users.name','users.surname','users.nit','users.email','programs.name_program')
+        $user =  DB::table('users')->select('users.id','users.name','users.surname','users.nit','users.email','users.image_url','programs.name_program')
         ->join('programs', 'users.id_program', '=', 'programs.id')
         ->where('users.id',$id)
         ->orderByRaw('updated_at - created_at DESC')->first();
@@ -118,13 +118,16 @@ class DiagnosticoController extends Controller
             ->join('estados', 'autodiagnosticos.id_estado', '=', 'estados.id')
             ->select('autodiagnosticos.fecha','estados.name_estado as estado')
             ->where('autodiagnosticos.id_user',$id)
+            ->where('autodiagnosticos.fecha', strtotime(date('d-m-Y')))
             ->orderByRaw('updated_at - created_at DESC')
             ->get()->first();
+            $id = $user->id;
             $name = $user->name;
             $surname = $user->surname;
             $program = $user->name_program;
             $nit = $user->nit;
             $email = $user->email;
+            $image = $user->image_url;
             if(is_object($autodiagnosticoByUser)){  
                 $date = $autodiagnosticoByUser->fecha;
                 $date = date('Y-m-d',$date);
@@ -137,11 +140,13 @@ class DiagnosticoController extends Controller
                 'status' => 'ok',
                 'code' => 200,
                 'data'=>array(
+                    'id_user'=>$id,
                     'name'=>$name,
                     'surname'=>$surname,
                     'program'=>$program,
                     'nit'=> $nit,
                     'email'=> $email,
+                    'image'=>$image,
                     'date'=>$date,
                     'state'=>$state
                     )

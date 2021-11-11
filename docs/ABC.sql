@@ -1,6 +1,6 @@
-CREATE DATABASE IF NOT EXISTS ABC;
+/* CREATE DATABASE IF NOT EXISTS ABC;
 USE ABC;
-
+ */
 CREATE TABLE constants(
 id 	int(255) auto_increment not null,
 name_constant varchar(255),
@@ -71,6 +71,6 @@ CREATE TABLE autodiagnosticos(
 INSERT INTO roles (name_rol) VALUES ('Estudiante'),('Docente');
 INSERT INTO programs (name_program) VALUES ('Ingeniería'),('Licenciatura');
 INSERT INTO constants (name_constant,content) VALUES ('keyToken','MISIONTIC-S&ND6n!jZ52k');
-INSERT INTO users(email,name,surname,nit,image_url,id_program,id_rol,password) VALUES ('usuario@email.com','usuario','test','12345','imagen_test.png','1','1','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3');
+INSERT INTO users(email,name,surname,nit,image_url,id_program,id_rol,password) VALUES ('usuario@email.com','usuario','test','12345','https://drive.google.com/uc?export=view&id=1tN7mUmg46KMR8vy42ow-eGM_bUsUNuio','1','1','a665a45920422f9d417e4867efdc4fb8a04a1f3fff1fa07e998e86f7f7a27ae3');
 INSERT INTO users_programs (id_user,id_program) VALUES ('1','1');
 INSERT INTO estados (name_estado) VALUES ('HABILITADO'),('NO HABILITADO');
