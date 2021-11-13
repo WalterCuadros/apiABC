@@ -21,4 +21,5 @@ Route::get('/', function () {
 });
 Route::post('/api/registerUser',[UserController::class, 'register']);
 Route::post('/api/loginUser',[UserController::class, 'login']);
+Route::post('/api/autodiagnosticoById',[DiagnosticoController::class, 'autodiagnosticoById']);
 Route::resource('/api/autodiagnostico', DiagnosticoController::class);

@@ -25,7 +25,7 @@ class UserController extends Controller
         $idRol = (!is_null($json) && isset($params->idRol)?$params->idRol:null);
         $password = (!is_null($json) && isset($params->password)?$params->password:null);
     
-        if(!is_null($json) && !is_null($email) && !is_null($name)  && !is_null($surname)  && !is_null($idProgram)  && !is_null($idRol) && !is_null($nit) && !is_null($imageUrl)   && !is_null($password) ){
+        if(!is_null($json) && !is_null($email) && !is_null($name)  && !is_null($surname)  && !is_null($idRol) && !is_null($nit) && !is_null($imageUrl)   && !is_null($password) ){
             //Create User 
             try{
                 $user = new User();

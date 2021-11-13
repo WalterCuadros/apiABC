@@ -108,58 +108,7 @@ class DiagnosticoController extends Controller
      */
     public function show($id)
     {
-        $user =  DB::table('users')->select('users.id','users.name','users.surname','users.nit','users.email','users.image_url','programs.name_program')
-        ->join('programs', 'users.id_program', '=', 'programs.id')
-        ->where('users.id',$id)
-        ->orderByRaw('updated_at - created_at DESC')->first();
-        if(is_object($user))
-        {
-            $autodiagnosticoByUser = DB::table('autodiagnosticos')
-            ->join('estados', 'autodiagnosticos.id_estado', '=', 'estados.id')
-            ->select('autodiagnosticos.fecha','estados.name_estado as estado')
-            ->where('autodiagnosticos.id_user',$id)
-            ->where('autodiagnosticos.fecha', strtotime(date('d-m-Y')))
-            ->orderByRaw('updated_at - created_at DESC')
-            ->get()->first();
-            $id = $user->id;
-            $name = $user->name;
-            $surname = $user->surname;
-            $program = $user->name_program;
-            $nit = $user->nit;
-            $email = $user->email;
-            $image = $user->image_url;
-            if(is_object($autodiagnosticoByUser)){  
-                $date = $autodiagnosticoByUser->fecha;
-                $date = date('Y-m-d',$date);
-                $state = $autodiagnosticoByUser->estado;
-            }else{
-               $date = "N/A";
-               $state = "NO HAY REGISTROS";
-            }
-            $data = array(
-                'status' => 'ok',
-                'code' => 200,
-                'data'=>array(
-                    'id_user'=>$id,
-                    'name'=>$name,
-                    'surname'=>$surname,
-                    'program'=>$program,
-                    'nit'=> $nit,
-                    'email'=> $email,
-                    'image'=>$image,
-                    'date'=>$date,
-                    'state'=>$state
-                    )
-            );
-            
-        }else{
-            $data = array(
-                'status' => 'error',
-                'code' => 400,
-                'message' => 'User no register'
-            );
-        }
-        return response()->json($data,$data['code']);
+       
 
     }
 
@@ -196,4 +145,82 @@ class DiagnosticoController extends Controller
     {
         //
     }
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function autodiagnosticoById(Request $request)
+    {
+        $hash = $request->header('Authorization', null);
+        $jwtAuth = new JwtAuth();
+        $checktoken = $jwtAuth->checkToken($hash);
+        $opccionesReferencia = array('a','b','c','d','e','f','g');
+        if($checktoken){
+            $user_request =  $jwtAuth->checkToken($hash,true);
+            $id_user = $user_request->sub;
+            $user =  DB::table('users')->select('users.id','users.name','users.surname','users.nit','users.email','users.image_url','programs.name_program')
+            ->join('programs', 'users.id_program', '=', 'programs.id')
+            ->where('users.id',$id_user)
+            ->orderByRaw('updated_at - created_at DESC')->first();
+            if(is_object($user))
+            {
+                $autodiagnosticoByUser = DB::table('autodiagnosticos')
+                ->join('estados', 'autodiagnosticos.id_estado', '=', 'estados.id')
+                ->select('autodiagnosticos.fecha','estados.name_estado as estado')
+                ->where('autodiagnosticos.id_user',$id_user)
+                ->where('autodiagnosticos.fecha', strtotime(date('d-m-Y')))
+                ->orderByRaw('updated_at - created_at DESC')
+                ->get()->first();
+                $id = $user->id;
+                $name = $user->name;
+                $surname = $user->surname;
+                $program = $user->name_program;
+                $nit = $user->nit;
+                $email = $user->email;
+                $image = $user->image_url;
+                if(is_object($autodiagnosticoByUser)){  
+                    $date = $autodiagnosticoByUser->fecha;
+                    $date = date('Y-m-d',$date);
+                    $state = $autodiagnosticoByUser->estado;
+                }else{
+                   $date = "N/A";
+                   $state = "NO HAY REGISTROS";
+                }
+                $data = array(
+                    'status' => 'ok',
+                    'code' => 200,
+                    'data'=>array(
+                        'id_user'=>$id,
+                        'name'=>$name,
+                        'surname'=>$surname,
+                        'program'=>$program,
+                        'nit'=> $nit,
+                        'email'=> $email,
+                        'image'=>$image,
+                        'date'=>$date,
+                        'state'=>$state
+                        )
+                );
+                
+            }else{
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'User no register'
+                );
+            }
+            
+        }else{
+            $data = array(
+                'status' => 'error',
+                'code' => 400,
+                'message' => 'Token no autorized'
+            );
+        }
+        return response()->json($data,$data['code']);
+    }
+
 }
