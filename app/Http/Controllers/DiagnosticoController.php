@@ -157,7 +157,6 @@ class DiagnosticoController extends Controller
         $hash = $request->header('Authorization', null);
         $jwtAuth = new JwtAuth();
         $checktoken = $jwtAuth->checkToken($hash);
-        $opccionesReferencia = array('a','b','c','d','e','f','g');
         if($checktoken){
             $user_request =  $jwtAuth->checkToken($hash,true);
             $id_user = $user_request->sub;
@@ -221,6 +220,43 @@ class DiagnosticoController extends Controller
             );
         }
         return response()->json($data,$data['code']);
+    }
+    public function getDiagnosticosByIdCurso(Request $request){
+        $hash = $request->header('Authorization', null);
+        $jwtAuth = new JwtAuth();
+        $checktoken = $jwtAuth->checkToken($hash);
+        $validateService = new Validations();
+        if($checktoken){
+            $json = $request->input('json',null);   
+            $params = json_decode($json);
+            $params_array = json_decode($json,true);
+            $validate = $validateService->validate($params_array,'setIdCurso');
+            if($validate){
+                return response()->json($validate,400);
+            }
+            $id_program = $params->id_curso;
+            $users = DB::table('users')
+                ->select('users.id as id_user' ,'users.name','users.surname',DB::raw('IFNULL(estados.name_estado, "SIN REGISTRO") as estado') )
+                ->leftjoin('autodiagnosticos', 'users.id', '=', 'autodiagnosticos.id_user' )
+                ->leftjoin('estados', 'autodiagnosticos.id_estado', '=', 'estados.id')
+                ->where('id_program', $id_program)->get();
+            if(is_object($users) && !$users->isEmpty()){
+                $data = array(
+                    'status' => 'ok',
+                    'code' => 200,
+                    'estudents' => $users
+                ); 
+            }else{
+                $data = array(
+                    'status' => 'error',
+                    'code' => 400,
+                    'message' => 'There are no records in the database'
+                );
+            
+            }
+        }
+        return response()->json($data,200);
+            
     }
 
 }

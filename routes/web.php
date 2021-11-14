@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DiagnosticoController;
+use App\Http\Controllers\CursosController;
 use Illuminate\Support\Facades\DB;
 use App\User;
 /*
@@ -23,3 +24,5 @@ Route::post('/api/registerUser',[UserController::class, 'register']);
 Route::post('/api/loginUser',[UserController::class, 'login']);
 Route::post('/api/autodiagnosticoById',[DiagnosticoController::class, 'autodiagnosticoById']);
 Route::resource('/api/autodiagnostico', DiagnosticoController::class);
+Route::post('/api/getPrograms',[CursosController::class, 'getCursos']);
+Route::post('/api/getDiagnosticosByProgram',[DiagnosticoController::class, 'getDiagnosticosByIdCurso']);

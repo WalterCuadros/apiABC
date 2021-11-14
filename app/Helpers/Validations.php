@@ -8,7 +8,9 @@ class Validations{
         'pregunta_1'=> 'required',
         'pregunta_2'=> 'required'
     );
-
+    private $rulesSetIdCurso = array(
+        'id_curso'=> 'required|numeric|min:1'
+    );
     public function validate($params_array, $rule){
         $error = false;
         switch ($rule) {
@@ -18,6 +20,12 @@ class Validations{
                     $error = $validate->errors();
                 }
                 break;
+            case 'setIdCurso':
+                $validate = Validator::make($params_array,$this->rulesSetIdCurso);
+                if($validate->fails()){
+                    $error = $validate->errors();
+                }
+                break; 
         }
         return $error;
     }
