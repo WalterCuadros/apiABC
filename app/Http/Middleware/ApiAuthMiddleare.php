@@ -17,7 +17,7 @@ class ApiAuthMiddleare
      */
     public function handle(Request $request, Closure $next)
     {
-        return $next($request);
+        
         header('Access-Control-Allow-Origin: *');
         // Comprobar si el usuario está identificado.
         $token = $request->header('Authorization');
