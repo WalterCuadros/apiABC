@@ -23,6 +23,6 @@ Route::get('/', function () {
 Route::post('/api/registerUser',[UserController::class, 'register']);
 Route::post('/api/loginUser',[UserController::class, 'login']);
 Route::post('/api/autodiagnosticoById',[DiagnosticoController::class, 'autodiagnosticoById']);
-Route::resource('/api/autodiagnostico', DiagnosticoController::class);
-Route::post('/api/getPrograms',[CursosController::class, 'getCursos']);
-Route::post('/api/getDiagnosticosByProgram',[DiagnosticoController::class, 'getDiagnosticosByIdCurso']);
+Route::middleware('api.auth')->resource('/api/autodiagnostico', DiagnosticoController::class);
+Route::middleware('api.auth')->get('/api/getPrograms',[CursosController::class, 'getCursos']);
+Route::middleware('api.auth')->get('/api/getDiagnosticosByProgram/{id_program}',[DiagnosticoController::class, 'getDiagnosticosByIdCurso']);

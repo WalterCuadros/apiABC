@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\DB;
 
 class DiagnosticoController extends Controller
 {
+
+  
+
     /**
      * Display a listing of the resource.
      *
@@ -59,44 +62,35 @@ class DiagnosticoController extends Controller
         $hash = $request->header('Authorization', null);
         $jwtAuth = new JwtAuth();
         $validateService = new Validations();
-        $checktoken = $jwtAuth->checkToken($hash);
         $opccionesReferencia = array('a','b','c','d','e','f','g');
-        if($checktoken){
-            $json = $request->input('json',null);   
-            $params = json_decode($json);
-            $params_array = json_decode($json,true);
-            $validate = $validateService->validate($params_array,'setautodiagnostico');
-            if($validate){
-                return response()->json($validate,400);
-            }
-            $user =  $jwtAuth->checkToken($hash,true);
-            $autodiagnostico = new Autodiagnostico();
-            $autodiagnostico->id_user = $user->sub;
-            $opcionesPregunta2 = str_split($params->pregunta_2);
-            $contadorOpciones = 0;
-            for ($i=0; $i <=count($opcionesPregunta2)-1 ; $i++) { 
-                if(in_array($opcionesPregunta2[$i],$opccionesReferencia)) {
-                    $contadorOpciones++;
-                }
-            }
-            $estado = ($contadorOpciones>=1)?2:1;
-            $autodiagnostico->id_estado = $estado;
-            $autodiagnostico->pregunta_1 = $params->pregunta_1;
-            $autodiagnostico->pregunta_2 = $params->pregunta_2;
-            $autodiagnostico->fecha =   strtotime(date('d-m-Y'));
-            $autodiagnostico->save();
-            $data = array(
-                'status' => 'ok',
-                'code' => 200,
-                'message' => 'Record saved'
-            );
-        }else{
-            $data = array(
-                'status' => 'error',
-                'code' => 400,
-                'message' => 'User not authorized'
-            );
+        $json = $request->input('json',null);   
+        $params = json_decode($json);
+        $params_array = json_decode($json,true);
+        $validate = $validateService->validate($params_array,'setautodiagnostico');
+        if($validate){
+            return response()->json($validate,400);
         }
+        $user =  $jwtAuth->checkToken($hash,true);
+        $autodiagnostico = new Autodiagnostico();
+        $autodiagnostico->id_user = $user->sub;
+        $opcionesPregunta2 = str_split($params->pregunta_2);
+        $contadorOpciones = 0;
+        for ($i=0; $i <=count($opcionesPregunta2)-1 ; $i++) { 
+            if(in_array($opcionesPregunta2[$i],$opccionesReferencia)) {
+                $contadorOpciones++;
+            }
+        }
+        $estado = ($contadorOpciones>=1)?2:1;
+        $autodiagnostico->id_estado = $estado;
+        $autodiagnostico->pregunta_1 = $params->pregunta_1;
+        $autodiagnostico->pregunta_2 = $params->pregunta_2;
+        $autodiagnostico->fecha =   strtotime(date('d-m-Y'));
+        $autodiagnostico->save();
+        $data = array(
+            'status' => 'ok',
+            'code' => 200,
+            'message' => 'Record saved'
+        );
         return response()->json($data,$data['code']);
     }
 
@@ -106,61 +100,9 @@ class DiagnosticoController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id_user)
     {
-       
-
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function autodiagnosticoById(Request $request)
-    {
-        $hash = $request->header('Authorization', null);
-        $jwtAuth = new JwtAuth();
-        $checktoken = $jwtAuth->checkToken($hash);
-        if($checktoken){
-            $user_request =  $jwtAuth->checkToken($hash,true);
-            $id_user = $user_request->sub;
-            $user =  DB::table('users')->select('users.id','users.name','users.surname','users.nit','users.email','users.image_url','programs.name_program')
+        $user =  DB::table('users')->select('users.id','users.name','users.surname','users.nit','users.email','users.image_url','programs.name_program')
             ->join('programs', 'users.id_program', '=', 'programs.id')
             ->where('users.id',$id_user)
             ->orderByRaw('updated_at - created_at DESC')->first();
@@ -211,49 +153,70 @@ class DiagnosticoController extends Controller
                     'message' => 'User no register'
                 );
             }
-            
+            return response()->json($data,$data['code']);
+
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getDiagnosticosByIdCurso($id_program){
+    
+        $users = DB::table('users')
+            ->select('users.id as id_user' ,'users.name','users.surname',DB::raw('IFNULL(estados.name_estado, "SIN REGISTRO") as estado') )
+            ->leftjoin('autodiagnosticos', 'users.id', '=', 'autodiagnosticos.id_user' )
+            ->leftjoin('estados', 'autodiagnosticos.id_estado', '=', 'estados.id')
+            ->where('id_program', $id_program)->get();
+        if(is_object($users) && !$users->isEmpty()){
+            $data = array(
+                'status' => 'ok',
+                'code' => 200,
+                'estudents' => $users
+            ); 
         }else{
             $data = array(
                 'status' => 'error',
                 'code' => 400,
-                'message' => 'Token no autorized'
+                'message' => 'There are no records in the database'
             );
-        }
-        return response()->json($data,$data['code']);
-    }
-    public function getDiagnosticosByIdCurso(Request $request){
-        $hash = $request->header('Authorization', null);
-        $jwtAuth = new JwtAuth();
-        $checktoken = $jwtAuth->checkToken($hash);
-        $validateService = new Validations();
-        if($checktoken){
-            $json = $request->input('json',null);   
-            $params = json_decode($json);
-            $params_array = json_decode($json,true);
-            $validate = $validateService->validate($params_array,'setIdCurso');
-            if($validate){
-                return response()->json($validate,400);
-            }
-            $id_program = $params->id_curso;
-            $users = DB::table('users')
-                ->select('users.id as id_user' ,'users.name','users.surname',DB::raw('IFNULL(estados.name_estado, "SIN REGISTRO") as estado') )
-                ->leftjoin('autodiagnosticos', 'users.id', '=', 'autodiagnosticos.id_user' )
-                ->leftjoin('estados', 'autodiagnosticos.id_estado', '=', 'estados.id')
-                ->where('id_program', $id_program)->get();
-            if(is_object($users) && !$users->isEmpty()){
-                $data = array(
-                    'status' => 'ok',
-                    'code' => 200,
-                    'estudents' => $users
-                ); 
-            }else{
-                $data = array(
-                    'status' => 'error',
-                    'code' => 400,
-                    'message' => 'There are no records in the database'
-                );
-            
-            }
+        
         }
         return response()->json($data,200);
             
