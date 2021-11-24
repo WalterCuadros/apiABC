@@ -110,7 +110,7 @@ class DiagnosticoController extends Controller
             {
                 $autodiagnosticoByUser = DB::table('autodiagnosticos')
                 ->join('estados', 'autodiagnosticos.id_estado', '=', 'estados.id')
-                ->select('autodiagnosticos.fecha','estados.name_estado as estado')
+                ->select('autodiagnosticos.id as id_auto','autodiagnosticos.fecha','estados.name_estado as estado')
                 ->where('autodiagnosticos.id_user',$id_user)
                 ->where('autodiagnosticos.fecha', strtotime(date('d-m-Y')))
                 ->orderByRaw('updated_at - created_at DESC')
@@ -126,7 +126,7 @@ class DiagnosticoController extends Controller
                     $date = $autodiagnosticoByUser->fecha;
                     $date = date('Y-m-d',$date);
                     $state = $autodiagnosticoByUser->estado;
-                    $id_autodiagnostico = $autodiagnosticoByUser->id;
+                    $id_autodiagnostico = $autodiagnosticoByUser->id_auto;
                 }else{
                    $date = "N/A";
                    $state = "NO HAY REGISTROS";
