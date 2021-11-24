@@ -126,6 +126,7 @@ class DiagnosticoController extends Controller
                     $date = $autodiagnosticoByUser->fecha;
                     $date = date('Y-m-d',$date);
                     $state = $autodiagnosticoByUser->estado;
+                    $id_autodiagnostico = $autodiagnosticoByUser->id;
                 }else{
                    $date = "N/A";
                    $state = "NO HAY REGISTROS";
@@ -142,7 +143,8 @@ class DiagnosticoController extends Controller
                         'email'=> $email,
                         'image'=>$image,
                         'date'=>$date,
-                        'state'=>$state
+                        'state'=>$state,
+                        'id'=>$id_autodiagnostico
                         )
                 );
                 
@@ -177,7 +179,36 @@ class DiagnosticoController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        $json = $request->input('json',null);   
+        $params = json_decode($json);
+        $params_array = json_decode($json,true);
+        $validateService = new Validations();
+        $opccionesReferencia = array('a','b','c','d','e','f','g');
+        $validate = $validateService->validate($params_array,'setautodiagnostico');
+        if($validate){
+            return response()->json($validate,400);
+        }
+        $autodiagnostico = Autodiagnostico::find($id);
+        $opcionesPregunta2 = str_split($params->pregunta_2);
+        $contadorOpciones = 0;
+        for ($i=0; $i <=count($opcionesPregunta2)-1 ; $i++) { 
+            if(in_array($opcionesPregunta2[$i],$opccionesReferencia)) {
+                $contadorOpciones++;
+            }
+        }
+        $estado = ($contadorOpciones>=1)?2:1;
+        $autodiagnostico->id_estado = $estado;
+        $autodiagnostico->pregunta_1 = $params->pregunta_1;
+        $autodiagnostico->pregunta_2 = $params->pregunta_2;
+        $autodiagnostico->fecha =   strtotime(date('d-m-Y'));
+        $autodiagnostico->save();
+        $data = array(
+            'status' => 'ok',
+            'code' => 200,
+            'message' => 'Record update'
+        );
+        return response()->json($data,$data['code']);
     }
 
     /**
