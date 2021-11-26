@@ -128,7 +128,7 @@ class DiagnosticoController extends Controller
                     $state = $autodiagnosticoByUser->estado;
                     $id_autodiagnostico = $autodiagnosticoByUser->id_auto;
                 }else{
-                   $id_autodiagnostico = "N/A";
+                   $id_autodiagnostico = 0;
                    $date = "N/A";
                    $state = "NO HAY REGISTROS";
                 }
