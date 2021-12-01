@@ -113,7 +113,7 @@ class DiagnosticoController extends Controller
                 ->select('autodiagnosticos.id as id_auto','autodiagnosticos.fecha','estados.name_estado as estado')
                 ->where('autodiagnosticos.id_user',$id_user)
                 ->where('autodiagnosticos.fecha', strtotime(date('d-m-Y')))
-                ->orderByRaw('updated_at - created_at DESC')
+                ->orderBy('id','desc')
                 ->get()->first();
                 $id = $user->id;
                 $name = $user->name;
